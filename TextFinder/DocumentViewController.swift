@@ -40,7 +40,8 @@ class DocumentViewController: NSViewController {
             print("Failed reading from URL: \(theURL), Error: " + error.localizedDescription)
         }
         theTextView?.textStorage?.append(NSAttributedString(string: fileContents!))
-        theTextView?.font = NSFont(name: "Lucida Sans", size: 16.0)
+        //theTextView?.font = NSFont(name: "Lucida Sans", size: 16.0)
+        theTextView?.font = NSFont.systemFont(ofSize: 16.0)
         theTextView?.isEditable = false
     }
     
