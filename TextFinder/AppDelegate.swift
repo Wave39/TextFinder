@@ -34,6 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 let controller = DocumentViewController.init(url: url)
                 if let window = NSApplication.shared().mainWindow {
                     window.contentViewController = controller
+                    window.setFrame(NSMakeRect(0.0, 0.0, 550.0, 1000.0), display: true)
                 }
             }
         }

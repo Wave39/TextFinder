@@ -14,12 +14,14 @@ class DocumentViewController: NSViewController {
     @IBOutlet var theSearchField: NSSearchField?
     @IBOutlet var theTextView: NSTextView?
     var fileContents: String?
+    var tabIndex: Int?
     
     init(url: URL) {
         self.theURL = url
         super.init(nibName: nil, bundle: nil)!
         let v: KeypressView = self.view as! KeypressView
         v.delegate = self
+        tabIndex = 0
     }
     
     required init?(coder: NSCoder) {
@@ -29,7 +31,7 @@ class DocumentViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
-        //print ("The path is " + thePath)
+        print ("The path is " + theURL.absoluteString)
         fileContents = ""
         do {
             fileContents = try String(contentsOf: theURL)
@@ -70,6 +72,7 @@ extension DocumentViewController: KeypressViewDelegate {
         var s = theSearchField?.stringValue
         if theEvent.keyCode == 51 {
             // backspace
+            tabIndex = 0
             if (s?.characters.count)! < 2 {
                 s = ""
             } else {
@@ -79,8 +82,13 @@ extension DocumentViewController: KeypressViewDelegate {
             }
         } else if theEvent.keyCode == 53 {
             // escape
+            tabIndex = 0
             s = ""
+        } else if theEvent.keyCode == 48 {
+            // tab
+            tabIndex = tabIndex! + 1
         } else {
+            tabIndex = 0
             s = s! + theEvent.characters!
         }
         
@@ -90,7 +98,11 @@ extension DocumentViewController: KeypressViewDelegate {
             let indices = fileContents?.indicesOf(string: s!, maxMatches: 10)
             print ("Indices: \(indices)")
             if (indices?.count)! > 0 {
-                let range = NSRange(location: (indices?[0])!, length: s!.characters.count)
+                if tabIndex! >= (indices?.count)! {
+                    tabIndex = 0
+                }
+                
+                let range = NSRange(location: (indices?[tabIndex!])!, length: s!.characters.count)
                 theTextView?.scrollRangeToVisible(range)
                 theTextView?.setSelectedRange(range)
                 resetTextView = false
